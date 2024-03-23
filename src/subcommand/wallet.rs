@@ -12,6 +12,8 @@ pub mod balance;
 pub mod cardinals;
 pub mod create;
 pub mod dump;
+pub mod etch;
+pub mod generate;
 pub mod inscribe;
 pub mod inscriptions;
 pub mod mint;
@@ -46,6 +48,10 @@ pub(crate) enum Subcommand {
   Create(create::Create),
   #[command(about = "Dump wallet descriptors")]
   Dump,
+  #[command(about = "Create rune")]
+  Etch(etch::Etch),
+  #[command(about = "Generate wallet")]
+  Generate(generate::Generate),
   #[command(about = "Create inscription")]
   Inscribe(inscribe::Inscribe),
   #[command(about = "List wallet inscriptions")]
@@ -73,6 +79,7 @@ impl WalletCommand {
     match self.subcommand {
       Subcommand::Create(create) => return create.run(self.name, &settings),
       Subcommand::Restore(restore) => return restore.run(self.name, &settings),
+      Subcommand::Generate(generate) => return generate.run(),
       _ => {}
     };
 
@@ -102,7 +109,7 @@ impl WalletCommand {
       Subcommand::Transactions(transactions) => transactions.run(wallet),
       Subcommand::Outputs => outputs::run(wallet),
       Subcommand::Cardinals => cardinals::run(wallet),
-      Subcommand::Create(_) | Subcommand::Restore(_) => unreachable!(),
+      Subcommand::Create(_) | Subcommand::Restore(_) | Subcommand::Generate(_) => unreachable!(),
     }
   }
 }
