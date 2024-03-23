@@ -1,3 +1,20 @@
+> For personal use only
+
+`case 1`: generate personal wallet
+
+```shell
+Usage: ordx wallet generate [OPTIONS]
+
+Options:
+  -p, --passphrase <PASSPHRASE>  Use <PASSPHRASE> to derive wallet seed. [default: ]
+  -w, --words <WORDS>            The number of words in the phrase to generate [default: 12]
+  -n, --network <NETWORK>        Specify network [default: mainnet] [possible values: mainnet, testnet, signet, regtest]
+  -h, --help                     Print help
+```
+
+
+
+
 `ord`
 =====
 
