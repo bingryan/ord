@@ -89,7 +89,7 @@ name = "server"
 harness = false
 
 [[bin]]
-name = "ord"
+name = "ordx"
 path = "src/bin/main.rs"
 
 [lib]
