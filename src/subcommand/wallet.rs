@@ -12,7 +12,6 @@ pub mod balance;
 pub mod cardinals;
 pub mod create;
 pub mod dump;
-pub mod etch;
 pub mod generate;
 pub mod inscribe;
 pub mod inscriptions;
@@ -48,8 +47,6 @@ pub(crate) enum Subcommand {
   Create(create::Create),
   #[command(about = "Dump wallet descriptors")]
   Dump,
-  #[command(about = "Create rune")]
-  Etch(etch::Etch),
   #[command(about = "Generate wallet")]
   Generate(generate::Generate),
   #[command(about = "Create inscription")]
