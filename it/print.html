@@ -853,7 +853,7 @@ OP_ENDIF
 <p>A transaction may have at most one runestone.</p>
 <p>A runestone may etch a new rune, mint an existing rune, and transfer runes from a transaction's inputs to its outputs.</p>
 <p>A transaction output may hold balances of any number of runes.</p>
-<p>Runes are identified by IDs, which consist of the block in which a rune was etched and the index of the etching transaction within that block, represented in text as <code>BLOCK:TX</code>. For example, the ID of the rune minted the 20th transaction of the 500th block is <code>500:20</code>.</p>
+<p>Runes are identified by IDs, which consist of the block in which a rune was etched and the index of the etching transaction within that block, represented in text as <code>BLOCK:TX</code>. For example, the ID of the rune minted in the 20th transaction of the 500th block is <code>500:20</code>.</p>
 <h2 id="etching"><a class="header" href="#etching">Etching</a></h2>
 <p>Runes come into existence by being etched. Etching creates a rune and sets its properties. Once set, these properties are immutable, even to its etcher.</p>
 <h3 id="name"><a class="header" href="#name">Name</a></h3>
@@ -1602,6 +1602,22 @@ OP_ENDIF
 <p>Una volta confermata la transazione di invio, il destinatario può confermare la ricezione eseguendo:</p>
 <pre><code>ord wallet inscriptions
 </code></pre>
+<h2 id="sending-runes"><a class="header" href="#sending-runes">Sending Runes</a></h2>
+<p>Chiedere al destinatario di generare un nuovo indirizzo eseguendo:</p>
+<pre><code>ord wallet receive
+</code></pre>
+<p>Send the runes by running:</p>
+<pre><code>ord wallet send --fee-rate &lt;FEE_RATE&gt; &lt;ADDRESS&gt; &lt;RUNES_AMOUNT&gt;
+</code></pre>
+<p>Where <code>RUNES_AMOUNT</code> is the number of runes to send, a <code>:</code> character, and the name of the rune. For example if you want to send 1000 of the EXAMPLE rune, you would use <code>1000:EXAMPLE</code>.</p>
+<pre><code>ord wallet send --fee-rate 1 SOME_ADDRESS 1000:EXAMPLE
+</code></pre>
+<p>Vedere la transazione in sospeso con:</p>
+<pre><code>ord wallet transactions
+</code></pre>
+<p>Once the send transaction confirms, the recipient can confirm receipt with:</p>
+<pre><code>ord wallet balance
+</code></pre>
 <h2 id="ricevere-iscrizioni"><a class="header" href="#ricevere-iscrizioni">Ricevere Iscrizioni</a></h2>
 <p>Generare un nuovo indirizzo di ricezione utilizzando:</p>
 <pre><code>ord wallet receive
@@ -2114,7 +2130,7 @@ $ord outputs
 <tr><td>Regtest</td><td><code>--regtest</code> o <code>-r</code></td></tr>
 </tbody></table>
 </div>
-<p>Regtest non richiede il download della blockchain o l'indicizzazione di ord.</p>
+<p>Regtest doesn't require downloading the blockchain since you create your own private blockchain, so indexing <code>ord</code> is almost instantaneous.</p>
 <h2 id="esempio-4"><a class="header" href="#esempio-4">Esempio</a></h2>
 <p>Run <code>bitcoind</code> in regtest with:</p>
 <pre><code>bitcoind -regtest -txindex
