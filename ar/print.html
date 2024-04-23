@@ -700,7 +700,7 @@ OP_ENDIF
 <li><code>/r/blocktime</code>: UNIX time stamp of latest block.</li>
 <li><code>/r/children/&lt;INSCRIPTION_ID&gt;</code>: the first 100 child inscription ids.</li>
 <li><code>/r/children/&lt;INSCRIPTION_ID&gt;/&lt;PAGE&gt;</code>: the set of 100 child inscription ids on <code>&lt;PAGE&gt;</code>.</li>
-<li><code>/r/inscription/:inscription_id</code>: information about an inscription</li>
+<li><code>/r/inscription/&lt;INSCRIPTION_ID&gt;</code>: information about an inscription</li>
 <li><code>/r/metadata/&lt;INSCRIPTION_ID&gt;</code>: JSON string containing the hex-encoded CBOR metadata.</li>
 <li><code>/r/sat/&lt;SAT_NUMBER&gt;</code>: the first 100 inscription ids on a sat.</li>
 <li><code>/r/sat/&lt;SAT_NUMBER&gt;/&lt;PAGE&gt;</code>: the set of 100 inscription ids on <code>&lt;PAGE&gt;</code>.</li>
@@ -1635,7 +1635,7 @@ OP_ENDIF
 <pre><code>ord wallet inscriptions
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="batch-inscribing"><a class="header" href="#batch-inscribing">Batch Inscribing</a></h1>
-<p>Multiple inscriptions can be created inscriptions at the same time using the <a href="guides/./../inscriptions/pointer.html">pointer field</a>. This is especially helpful for collections, or other cases when multiple inscriptions should share the same parent, since the parent can passed into a reveal transaction that creates multiple children.</p>
+<p>Multiple inscriptions can be created at the same time using the <a href="guides/./../inscriptions/pointer.html">pointer field</a>. This is especially helpful for collections, or other cases when multiple inscriptions should share the same parent, since the parent can passed into a reveal transaction that creates multiple children.</p>
 <p>To create a batch inscription using a batchfile in <code>batch.yaml</code>, run the following command:</p>
 <pre><code class="language-bash">ord wallet batch --fee-rate 21 --batch batch.yaml
 </code></pre>
@@ -1773,8 +1773,8 @@ inscriptions:
 <p>هناك <a href="https://github.com/ordinals/ord/issues/1589">خلل</a> حاليًا يجعل من المحفظة المستوردة ألا تُمسح تلقائياً ضد سلسلة الكتل. للتغلب على ذلك، ستحتاج إلى تشغيل عملية مسح يدويًا باستخدام واجهة سطر الأوامر للنود البيتكوين: <code>bitcoin-cli -rpcwallet=ord rescanblockchain 767430</code></p>
 <p>بعد ذلك، يمكنك التحقق من الإنسكريبشين محفظتك باستخدام <code>ord wallet inscriptions</code></p>
 <p>يرجى ملاحظة أنه إذا كنت قد أنشأت بالفعل محفظة بواسطة ord في السابق، فسيكون لديك محفظة بالاسم الافتراضي بالفعل، وستحتاج إلى تعيين اسم محفظتك المستوردة باسم مختلف. يمكنك استخدام <code>wallet--</code> براميتير في جميع أوامر <code>ord</code> للإشارة إلى محفظة مختلفة، على سبيل المثال:</p>
-<p><code>ord --wallet ord_from_sparrow wallet restore "BIP39 SEED PHRASE"</code></p>
-<p><code>ord --wallet ord_from_sparrow wallet inscriptions</code></p>
+<p><code>ord wallet --name ord_from_sparrow wallet restore --from mnemonic</code></p>
+<p><code>ord wallet --name ord_from_sparrow wallet inscriptions</code></p>
 <p><code>bitcoin-cli -rpcwallet=ord_from_sparrow rescanblockchain 767430</code></p>
 <h2 id="جمع-الإنسكريبشين-باستخدام-محفظة-سباروو-sparrow"><a class="header" href="#جمع-الإنسكريبشين-باستخدام-محفظة-سباروو-sparrow">جمع الإنسكريبشين باستخدام محفظة سباروو Sparrow</a></h2>
 <h4 id="-تحذير--1"><a class="header" href="#-تحذير--1">⚠️⚠️ تحذير ⚠️⚠️</a></h4>

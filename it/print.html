@@ -700,7 +700,7 @@ OP_ENDIF
 <li><code>/r/blocktime</code>: UNIX time stamp of latest block.</li>
 <li><code>/r/children/&lt;INSCRIPTION_ID&gt;</code>: the first 100 child inscription ids.</li>
 <li><code>/r/children/&lt;INSCRIPTION_ID&gt;/&lt;PAGE&gt;</code>: the set of 100 child inscription ids on <code>&lt;PAGE&gt;</code>.</li>
-<li><code>/r/inscription/:inscription_id</code>: information about an inscription</li>
+<li><code>/r/inscription/&lt;INSCRIPTION_ID&gt;</code>: information about an inscription</li>
 <li><code>/r/metadata/&lt;INSCRIPTION_ID&gt;</code>: JSON string containing the hex-encoded CBOR metadata.</li>
 <li><code>/r/sat/&lt;SAT_NUMBER&gt;</code>: the first 100 inscription ids on a sat.</li>
 <li><code>/r/sat/&lt;SAT_NUMBER&gt;/&lt;PAGE&gt;</code>: the set of 100 inscription ids on <code>&lt;PAGE&gt;</code>.</li>
@@ -1635,7 +1635,7 @@ OP_ENDIF
 <pre><code>ord wallet inscriptions
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="iscrivere-in-batch"><a class="header" href="#iscrivere-in-batch">Iscrivere in Batch</a></h1>
-<p>È possibile creare più iscrizioni contemporaneamente utilizzando il <a href="guides/./../inscriptions/pointer.html">campo puntatore</a>. Questo è particolarmente utile per le collezioni o per altri casi in cui più iscrizioni devono condividere lo stesso genitore, poiché il genitore può essere passato in una transazione di rivelazione che crea più figli.</p>
+<p>Multiple inscriptions can be created at the same time using the <a href="guides/./../inscriptions/pointer.html">pointer field</a>. This is especially helpful for collections, or other cases when multiple inscriptions should share the same parent, since the parent can passed into a reveal transaction that creates multiple children.</p>
 <p>Per creare un'iscrizione batch usando un batchfile in <code>batch.yaml</code>, eseguire il seguente comando:</p>
 <pre><code class="language-bash">ord wallet batch --fee-rate 21 --batch batch.yaml
 </code></pre>
@@ -1773,8 +1773,8 @@ inscriptions:
 <p>Attualmente esiste un <a href="https://github.com/ordinals/ord/issues/1589">bug</a> che fa sì che un portafoglio importato non venga automaticamente ricontrollato rispetto alla blockchain. Per ovviare a questo problema è necessario attivare manualmente una nuova scansione utilizzando il bitcoin core cli: <code>bitcoin-cli -rpcwallet=ord rescanblockchain 767430</code></p>
 <p>È quindi possibile controllare le iscrizioni del proprio portafoglio utilizzando <code>ord wallet inscriptions</code></p>
 <p>Si noti che se si è precedentemente creato un portafoglio con <code>ord</code>, si avrà già un portafoglio con il nome predefinito e si dovrà dare un nome diverso al portafoglio importato. È possibile utilizzare il parametro <code>--wallet</code> in tutti i comandi <code>ord</code> per fare riferimento a un portafoglio diverso, ad es:</p>
-<p><code>ord --wallet ord_from_sparrow wallet restore "BIP39 SEED PHRASE"</code></p>
-<p><code>ord --wallet ord_from_sparrow wallet inscriptions</code></p>
+<p><code>ord wallet --name ord_from_sparrow wallet restore --from mnemonic</code></p>
+<p><code>ord wallet --name ord_from_sparrow wallet inscriptions</code></p>
 <p><code>bitcoin-cli -rpcwallet=ord_from_sparrow rescanblockchain 767430</code></p>
 <h2 id="invio-di-iscrizioni-con-sparrow-wallet"><a class="header" href="#invio-di-iscrizioni-con-sparrow-wallet">Invio di iscrizioni con Sparrow Wallet</a></h2>
 <h4 id="-attenzione--1"><a class="header" href="#-attenzione--1">⚠️⚠️ Attenzione ⚠️⚠️</a></h4>
