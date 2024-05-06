@@ -1,4 +1,4 @@
-use super::*;
+use {super::*, colored::Colorize};
 
 #[derive(Debug, Parser)]
 pub(crate) struct Accelerator {
@@ -34,13 +34,25 @@ impl Accelerator {
     let tx = client.get_raw_transaction(&self.tx, None)?;
 
     let fee_rate = match txr.fee {
-      Some(fee) => fee.to_sat() as f64 / tx.size() as f64,
+      Some(fee) => fee.abs().to_sat() as f64 / tx.size() as f64,
       None => 0.0,
     };
 
     ensure!(
       fee_rate < self.fee_rate.n(),
       "The transaction fee rate is already higher than the specified fee rate"
+    );
+
+    eprintln!(
+      "{}{}
+{}{} sat/vB
+{}{} sat/vB",
+      "Accelerating TxID: ".bright_green().bold(),
+      txr.info.txid,
+      "Current Fee  Rate: ".blue().bold(),
+      fee_rate,
+      "Target  Fee  Rate: ".blue().bold(),
+      self.fee_rate.n(),
     );
 
     Ok(Some(Box::new(())))
