@@ -31,6 +31,18 @@ impl Accelerator {
       "The transaction has already been confirmed"
     );
 
+    let tx = client.get_raw_transaction(&self.tx, None)?;
+
+    let fee_rate = match txr.fee {
+      Some(fee) => fee.to_sat() as f64 / tx.size() as f64,
+      None => 0.0,
+    };
+
+    ensure!(
+      fee_rate < self.fee_rate.n(),
+      "The transaction fee rate is already higher than the specified fee rate"
+    );
+
     Ok(Some(Box::new(())))
   }
 }
