@@ -373,23 +373,23 @@
 <h2 id="稀有聪的总供给量"><a class="header" href="#稀有聪的总供给量">稀有聪的总供给量</a></h2>
 <h3 id="总供给"><a class="header" href="#总供给">总供给</a></h3>
 <ul>
-<li><code>普通</code>: 2千100万亿</li>
-<li><code>非普通</code>: 6,929,999</li>
-<li><code>罕见</code>: 3437</li>
-<li><code>史诗</code>: 32</li>
+<li><code>common</code>: 2,099,999,990,760,000</li>
+<li><code>uncommon</code>: 6,926,535</li>
+<li><code>rare</code>: 3432</li>
+<li><code>epic</code>: 27</li>
 <li><code>传奇</code>: 5</li>
 <li><code>神话</code>: 1</li>
 </ul>
 <h3 id="现有的供给量"><a class="header" href="#现有的供给量">现有的供给量</a></h3>
 <ul>
-<li><code>普通</code>: 1千900万亿</li>
-<li><code>非普通</code>: 808,262</li>
-<li><code>稀有</code>: 369</li>
+<li><code>common</code>: ~1.98 quadrillion</li>
+<li><code>uncommon</code>: ~880,000 (a new uncommon is mined roughly every ten minutes)</li>
+<li><code>rare</code>: ~430 (a new rare is mined roughly every two weeks)</li>
 <li><code>史诗</code>: 3</li>
 <li><code>传奇</code>: 0</li>
 <li><code>神话</code>: 1</li>
 </ul>
-<p>目前即使是非普通的聪也非常罕见。 截至撰写本文时， 已开采出 745,855 个非普通的聪-大约在每 25.6个流通比特币中会有一个。</p>
+<p>At the moment, even uncommon satoshis are quite rare. As of this writing, 876,023 uncommon satoshis have been mined - one per 22.6 bitcoin in circulation.</p>
 <h2 id="名字"><a class="header" href="#名字">名字</a></h2>
 <p>每个聪都有一个名字，由字母 <em>A</em> 到 <em>Z</em> 构成 随着聪被开采的时间越长，名字越短。如果他们从短开始，然后变得更长，那么所有好的、短的名字都会被困在无法使用的创世块中。</p>
 <p>举个例子, 1905530482684727°'的名字是 "iaiufjszmoba".最后一个被挖掘的聪的名字会是"a"。10个字母或更少字符的组合都会存在，或者总有一天会存在。</p>
@@ -3886,6 +3886,50 @@ OP_ENDIF
 }
 </code></pre>
 </details>
+<details>
+  <summary>
+    <code>GET</code>
+    <code><b>/r/utxo/&lt;OUTPOINT&gt;</b></code>
+  </summary>
+<h3 id="description-18"><a class="header" href="#description-18">Description</a></h3>
+<p>Get assets held by an unspent transaction output.</p>
+<h3 id="示例-20"><a class="header" href="#示例-20">示例</a></h3>
+<p>Unspent transaction output with server without any indices:</p>
+<pre><code class="language-bash">curl -s -H "Accept: application/json" \
+  http://0.0.0.0:80/r/utxo/4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b:0
+</code></pre>
+<pre><code class="language-json">{
+  "inscriptions": null,
+  "runes": null,
+  "sat_ranges": null,
+  "value": 5000000000
+}
+</code></pre>
+<p>With rune, inscription, and sat index:</p>
+<pre><code class="language-bash">curl -s -H "Accept: application/json" \
+  http://0.0.0.0:80/r/utxo/626860df36c1047194866c6812f04c15ab84f3690e7cc06fd600c841f1943e05:0
+</code></pre>
+<pre><code class="language-json">{
+  "inscriptions": [
+    "6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0"
+  ],
+  "runes": {
+    "UNCOMMON•GOODS": {
+      "amount": 6845,
+      "divisibility": 0,
+      "symbol": "⧉"
+    }
+  },
+  "sat_ranges": [
+    [
+      1905800627509113,
+      1905800627509443
+    ]
+  ],
+  "value": 330
+}
+</code></pre>
+</details>
 <p>   </p>
 <p>注意： <code>&lt;SAT_NUMBER&gt;</code> 仅允许使用sat的实际数字，不允许使用度数、百分位数或小数等其他sat表示法。我们可能会在将来考虑支持这些表示法。</p>
 <p>Responses from most of the above recursive endpoints are JSON. For backwards compatibility, some endpoints are supported which only return plain-text responses.</p>
@@ -3923,6 +3967,15 @@ i               # separator
 <p>Inscription URIs are case-insensitive and can thus use the more compact alphanumeric mode when encoded as QR codes. Lowercase is, however, the preferred presentation style.</p>
 <p>The referent of an inscription URI is an HTTP resource with the content, content type, content encoding, and content length corresponding to the inscription with the given ID.</p>
 <p>The referent of an inscription URI is always the original content of the target inscription, and not the content of the delegate, regardless of whether or not the target inscription has a delegate.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="燃烧"><a class="header" href="#燃烧">燃烧</a></h1>
+<p>Inscriptions may be burned by constructing a transaction that spends them to a script pubkey beginning with <code>OP_RETURN</code>.</p>
+<p>Sending inscriptions to a so-called "burn address" is not recognized by <code>ord</code>.</p>
+<p>Burned inscriptions receive the "burned" charm, recognized with 🔥 on the inscription's <code>/inscription</code> page.</p>
+<p>When burning inscriptions, CBOR metadata may be included in a data push immediately following the <code>OP_RETURN</code>.</p>
+<p>Burn metadata is unstructured, having no meaning to the underlying protocol, and should be human readable. It is displayed on the burned inscription's <code>/inscription</code> page, in the same manner as inscription metadata, under the heading "burn metadata".</p>
+<p>Use it, if you feel like it, to commemorate the inscription, celebrate the closing of a collection, or for whatever other purposes you so desire.</p>
+<p>Data pushes after the first are currently ignored by <code>ord</code>. However, they may be given future meaning by the protocol, and should not be used.</p>
+<p>For example, transaction <a href="https://mempool.space/tx/b42f0d8a3277ce6a7e564fec8f5579f76bc19cb24f8eff565ebb81a4c2f94683">b42f0d8a3277ce6a7e564fec8f5579f76bc19cb24f8eff565ebb81a4c2f94683</a> burned inscription <a href="https://ordinals.com/inscription/681b5373c03e3f819231afd9227f54101395299c9e58356bda278e2f32bef2cdi0">681b5373c03e3f819231afd9227f54101395299c9e58356bda278e2f32bef2cdi0</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="inscription-examples"><a class="header" href="#inscription-examples">Inscription Examples</a></h1>
 <h2 id="委托-1"><a class="header" href="#委托-1">委托</a></h2>
 <ul>
@@ -4002,7 +4055,7 @@ i               # separator
 <p>符石可以包含任意数量的法令。法令由一个符文ID、一个数量和一个输出编号组成。法令按顺序处理，将未分配的符文分配给输出。</p>
 <h3 id="指针-1"><a class="header" href="#指针-1">指针</a></h3>
 <p>在所有法令处理完毕后，剩余的未分配符文被转移到交易的第一个非OP_RETURN输出。符石可以选择性地包含一个指针，指定一个替代的默认输出。</p>
-<h3 id="燃烧"><a class="header" href="#燃烧">燃烧</a></h3>
+<h3 id="燃烧-1"><a class="header" href="#燃烧-1">燃烧</a></h3>
 <p>符文可以通过将它们转移到一个包含法令或指针的<code>OP_RETURN</code>输出来燃烧。</p>
 <h2 id="墓碑"><a class="header" href="#墓碑">墓碑</a></h2>
 <p>由于多种原因，符石可能会形成错误，包括符石<code>OP_RETURN</code>中的非推送数据操作码、无效的变长整数或无法识别的符石字段。</p>
@@ -4485,9 +4538,9 @@ i               # separator
     <code>GET</code>
     <code><b>/address/&lt;ADDRESS&gt;</b></code>
   </summary>
-<h3 id="description-18"><a class="header" href="#description-18">Description</a></h3>
+<h3 id="description-19"><a class="header" href="#description-19">Description</a></h3>
 <p>List all assets of an address. Requires index with <code>--index-addresses</code> flag.</p>
-<h3 id="示例-20"><a class="header" href="#示例-20">示例</a></h3>
+<h3 id="示例-21"><a class="header" href="#示例-21">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/address/bc1pdrm7tcyk4k6c3cdcjwkp49jmfrwmtvt0dvqyy7y4qp79tgks4lmqdpj6rw
 </code></pre>
@@ -4558,9 +4611,9 @@ i               # separator
     <code>GET</code>
     <code><b>/block/&lt;BLOCKHASH&gt;</b></code>
   </summary>
-<h3 id="description-19"><a class="header" href="#description-19">Description</a></h3>
+<h3 id="description-20"><a class="header" href="#description-20">Description</a></h3>
 <p>Returns info about the specified block.</p>
-<h3 id="示例-21"><a class="header" href="#示例-21">示例</a></h3>
+<h3 id="示例-22"><a class="header" href="#示例-22">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
 </code></pre>
@@ -4599,9 +4652,9 @@ i               # separator
     <code>GET</code>
     <code><b>/block/&lt;BLOCKHEIGHT&gt;</b></code>
   </summary>
-<h3 id="description-20"><a class="header" href="#description-20">Description</a></h3>
+<h3 id="description-21"><a class="header" href="#description-21">Description</a></h3>
 <p>Returns info about the specified block.</p>
-<h3 id="示例-22"><a class="header" href="#示例-22">示例</a></h3>
+<h3 id="示例-23"><a class="header" href="#示例-23">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/block/0
 </code></pre>
@@ -4640,9 +4693,9 @@ i               # separator
     <code>GET</code>
     <code><b>/blockcount</b></code>
   </summary>
-<h3 id="description-21"><a class="header" href="#description-21">Description</a></h3>
+<h3 id="description-22"><a class="header" href="#description-22">Description</a></h3>
 <p>Returns the height of the latest block.</p>
-<h3 id="示例-23"><a class="header" href="#示例-23">示例</a></h3>
+<h3 id="示例-24"><a class="header" href="#示例-24">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/blockcount
 </code></pre>
@@ -4654,9 +4707,9 @@ i               # separator
     <code>GET</code>
     <code><b>/blockhash</b></code>
   </summary>
-<h3 id="description-22"><a class="header" href="#description-22">Description</a></h3>
+<h3 id="description-23"><a class="header" href="#description-23">Description</a></h3>
 <p>Returns blockhash for the latest block.</p>
-<h3 id="示例-24"><a class="header" href="#示例-24">示例</a></h3>
+<h3 id="示例-25"><a class="header" href="#示例-25">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/blockhash
 </code></pre>
@@ -4669,9 +4722,9 @@ i               # separator
     <code><b>/blockhash/&lt;BLOCKHEIGHT&gt;</b></code>
     &emsp;&emsp;&emsp;
   </summary>
-<h3 id="description-23"><a class="header" href="#description-23">Description</a></h3>
+<h3 id="description-24"><a class="header" href="#description-24">Description</a></h3>
 <p>Returns blockhash of specified block.</p>
-<h3 id="示例-25"><a class="header" href="#示例-25">示例</a></h3>
+<h3 id="示例-26"><a class="header" href="#示例-26">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/blockhash/840000
 </code></pre>
@@ -4683,9 +4736,9 @@ i               # separator
     <code>GET</code>
     <code><b>/blockheight</b></code>
   </summary>
-<h3 id="description-24"><a class="header" href="#description-24">Description</a></h3>
+<h3 id="description-25"><a class="header" href="#description-25">Description</a></h3>
 <p>Returns the height of the latest block.</p>
-<h3 id="示例-26"><a class="header" href="#示例-26">示例</a></h3>
+<h3 id="示例-27"><a class="header" href="#示例-27">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/blockheight
 </code></pre>
@@ -4697,9 +4750,9 @@ i               # separator
     <code>GET</code>
     <code><b>/blocks</b></code>
   </summary>
-<h3 id="description-25"><a class="header" href="#description-25">Description</a></h3>
+<h3 id="description-26"><a class="header" href="#description-26">Description</a></h3>
 <p>Returns the height of the latest block, the blockhashes of the last 100 blocks, and featured inscriptions from them.</p>
-<h3 id="示例-27"><a class="header" href="#示例-27">示例</a></h3>
+<h3 id="示例-28"><a class="header" href="#示例-28">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/blocks
 </code></pre>
@@ -4867,9 +4920,9 @@ i               # separator
     <code>GET</code>
     <code><b>/blocktime</b></code>
   </summary>
-<h3 id="description-26"><a class="header" href="#description-26">Description</a></h3>
+<h3 id="description-27"><a class="header" href="#description-27">Description</a></h3>
 <p>Returns the UNIX timestamp of when the latest block was mined.</p>
-<h3 id="示例-28"><a class="header" href="#示例-28">示例</a></h3>
+<h3 id="示例-29"><a class="header" href="#示例-29">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/blocktime
 </code></pre>
@@ -4881,9 +4934,9 @@ i               # separator
     <code>GET</code>
     <code><b>/decode/&lt;TRANSCATION_ID&gt;</b></code>
   </summary>
-<h3 id="description-27"><a class="header" href="#description-27">Description</a></h3>
+<h3 id="description-28"><a class="header" href="#description-28">Description</a></h3>
 <p>Decode a transaction, congruent to the <code>ord decode</code> command</p>
-<h3 id="示例-29"><a class="header" href="#示例-29">示例</a></h3>
+<h3 id="示例-30"><a class="header" href="#示例-30">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/decode/6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799
 </code></pre>
@@ -5723,9 +5776,9 @@ i               # separator
     <code>GET</code>
     <code><b>/inscription/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-28"><a class="header" href="#description-28">Description</a></h3>
+<h3 id="description-29"><a class="header" href="#description-29">Description</a></h3>
 <p>Fetch details about a specific inscription by its ID.</p>
-<h3 id="示例-30"><a class="header" href="#示例-30">示例</a></h3>
+<h3 id="示例-31"><a class="header" href="#示例-31">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" /
   http://0.0.0.0:80/inscription/6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0
 </code></pre>
@@ -5760,9 +5813,9 @@ i               # separator
     <code>GET</code>
     <code><b>/inscription/&lt;INSCRIPTION_ID&gt;/&lt;CHILD&gt;</b></code>
   </summary>
-<h3 id="description-29"><a class="header" href="#description-29">Description</a></h3>
+<h3 id="description-30"><a class="header" href="#description-30">Description</a></h3>
 <p>Returns the inscription information for the specified child.</p>
-<h3 id="示例-31"><a class="header" href="#示例-31">示例</a></h3>
+<h3 id="示例-32"><a class="header" href="#示例-32">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/inscription/b1ef66c2d1a047cbaa6260b74daac43813924378fe08ef8545da4cb79e8fcf00i0/0
 </code></pre>
@@ -5797,9 +5850,9 @@ i               # separator
     <code>POST</code>
     <code><b>/inscriptions</b></code>
   </summary>
-<h3 id="description-30"><a class="header" href="#description-30">Description</a></h3>
+<h3 id="description-31"><a class="header" href="#description-31">Description</a></h3>
 <p>Fetch details for a list of inscription IDs.</p>
-<h3 id="示例-32"><a class="header" href="#示例-32">示例</a></h3>
+<h3 id="示例-33"><a class="header" href="#示例-33">示例</a></h3>
 <pre><code class="language-bash">curl -s -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
@@ -5863,9 +5916,9 @@ i               # separator
     <code>GET</code>
     <code><b>/inscriptions</b></code>
   </summary>
-<h3 id="description-31"><a class="header" href="#description-31">Description</a></h3>
+<h3 id="description-32"><a class="header" href="#description-32">Description</a></h3>
 <p>Get a list of the latest 100 inscriptions.</p>
-<h3 id="示例-33"><a class="header" href="#示例-33">示例</a></h3>
+<h3 id="示例-34"><a class="header" href="#示例-34">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/inscriptions
 </code></pre>
@@ -5982,9 +6035,9 @@ i               # separator
     <code>GET</code>
     <code><b>/inscriptions/&lt;PAGE&gt;</b></code>
   </summary>
-<h3 id="description-32"><a class="header" href="#description-32">Description</a></h3>
+<h3 id="description-33"><a class="header" href="#description-33">Description</a></h3>
 <p>Pagination allows you to choose which page of 100 inscriptions to return.</p>
-<h3 id="示例-34"><a class="header" href="#示例-34">示例</a></h3>
+<h3 id="示例-35"><a class="header" href="#示例-35">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/inscriptions/9
 </code></pre>
@@ -6101,9 +6154,9 @@ i               # separator
     <code>GET</code>
     <code><b>/inscriptions/block/&lt;BLOCKHEIGHT&gt;</b></code>
   </summary>
-<h3 id="description-33"><a class="header" href="#description-33">Description</a></h3>
+<h3 id="description-34"><a class="header" href="#description-34">Description</a></h3>
 <p>Get inscriptions for a specific block.</p>
-<h3 id="示例-35"><a class="header" href="#示例-35">示例</a></h3>
+<h3 id="示例-36"><a class="header" href="#示例-36">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/inscriptions/block/767430
 </code></pre>
@@ -6121,9 +6174,9 @@ i               # separator
     <code>GET</code>
     <code><b>/install.sh</b></code>
   </summary>
-<h3 id="description-34"><a class="header" href="#description-34">Description</a></h3>
+<h3 id="description-35"><a class="header" href="#description-35">Description</a></h3>
 <p>Installs the latest pre-built binary of <code>ord</code></p>
-<h3 id="示例-36"><a class="header" href="#示例-36">示例</a></h3>
+<h3 id="示例-37"><a class="header" href="#示例-37">示例</a></h3>
 <p>See <a href="guides/wallet.html#installing-ord">wallet.md</a></p>
 </details>
 <details>
@@ -6131,9 +6184,9 @@ i               # separator
     <code>GET</code>
     <code><b>/output/&lt;OUTPOINT&gt;</b></code>
  </summary>
-<h3 id="description-35"><a class="header" href="#description-35">Description</a></h3>
+<h3 id="description-36"><a class="header" href="#description-36">Description</a></h3>
 <p>Returns information about a UTXO, including inscriptions within it.</p>
-<h3 id="示例-37"><a class="header" href="#示例-37">示例</a></h3>
+<h3 id="示例-38"><a class="header" href="#示例-38">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/output/bc4c30829a9564c0d58e6287195622b53ced54a25711d1b86be7cd3a70ef61ed:0
 </code></pre>
@@ -6156,9 +6209,9 @@ i               # separator
     <code>POST</code>
     <code><b>/outputs</b></code>
  </summary>
-<h3 id="description-36"><a class="header" href="#description-36">Description</a></h3>
+<h3 id="description-37"><a class="header" href="#description-37">Description</a></h3>
 <p>List information from a list of outputs.</p>
-<h3 id="示例-38"><a class="header" href="#示例-38">示例</a></h3>
+<h3 id="示例-39"><a class="header" href="#示例-39">示例</a></h3>
 <pre><code class="language-bash">curl -s -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
@@ -6198,7 +6251,7 @@ i               # separator
     <code>GET</code>
     <code><b>/outputs/&lt;ADDRESS&gt;</b></code>
   </summary>
-<h3 id="description-37"><a class="header" href="#description-37">Description</a></h3>
+<h3 id="description-38"><a class="header" href="#description-38">Description</a></h3>
 <p>Get UTXOs held by <code>&lt;ADDRESS&gt;</code>.</p>
 <h3 id="query-parameters"><a class="header" href="#query-parameters">Query Parameters</a></h3>
 <h4 id="type-optional"><a class="header" href="#type-optional"><code>type</code> (optional)</a></h4>
@@ -6209,7 +6262,7 @@ i               # separator
 <tr><td><code>runic</code></td><td>return UTXOs containing runes</td></tr>
 </tbody></table>
 </div>
-<h3 id="示例-39"><a class="header" href="#示例-39">示例</a></h3>
+<h3 id="示例-40"><a class="header" href="#示例-40">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   "http://0.0.0.0:80/outputs/358mMRwcxuCSkKheuVWaXHJBGKrXo3f6JW?type=cardinal"
 </code></pre>
@@ -6272,9 +6325,9 @@ i               # separator
     <code>GET</code>
     <code><b>/rune/&lt;RUNE&gt;</b></code>
   </summary>
-<h3 id="description-38"><a class="header" href="#description-38">Description</a></h3>
+<h3 id="description-39"><a class="header" href="#description-39">Description</a></h3>
 <p>Returns details about the specified rune. Requires index with <code>--index-runes</code> flag.</p>
-<h3 id="示例-40"><a class="header" href="#示例-40">示例</a></h3>
+<h3 id="示例-41"><a class="header" href="#示例-41">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://localhost/rune/UNCOMMONGOODS
 </code></pre>
@@ -6315,9 +6368,9 @@ i               # separator
     <code>GET</code>
     <code><b>/runes</b></code>
   </summary>
-<h3 id="description-39"><a class="header" href="#description-39">Description</a></h3>
+<h3 id="description-40"><a class="header" href="#description-40">Description</a></h3>
 <p>Returns details for last 100 inscribed runes.  Requires index with <code>--index-runes</code> flag.</p>
-<h3 id="示例-41"><a class="header" href="#示例-41">示例</a></h3>
+<h3 id="示例-42"><a class="header" href="#示例-42">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/runes
 </code></pre>
@@ -7803,9 +7856,9 @@ i               # separator
     <code>GET</code>
     <code><b>/runes/&lt;PAGE&gt;</b></code>
   </summary>
-<h3 id="description-40"><a class="header" href="#description-40">Description</a></h3>
+<h3 id="description-41"><a class="header" href="#description-41">Description</a></h3>
 <p>Pagination allows you to specify which page of 100 runes you'd like to return.</p>
-<h3 id="示例-42"><a class="header" href="#示例-42">示例</a></h3>
+<h3 id="示例-43"><a class="header" href="#示例-43">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/runes/0
 </code></pre>
@@ -9291,9 +9344,9 @@ i               # separator
     <code>GET</code>
     <code><b>/sat/&lt;SAT&gt;</b></code>
   </summary>
-<h3 id="description-41"><a class="header" href="#description-41">Description</a></h3>
+<h3 id="description-42"><a class="header" href="#description-42">Description</a></h3>
 <p>Returns details about a specific satoshi. Requires index with <code>--index-sats</code> flag.</p>
-<h3 id="示例-43"><a class="header" href="#示例-43">示例</a></h3>
+<h3 id="示例-44"><a class="header" href="#示例-44">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/sat/2099994106992659
 </code></pre>
@@ -9321,9 +9374,9 @@ i               # separator
     <code>GET</code>
     <code><b>/status</b></code>
   </summary>
-<h3 id="description-42"><a class="header" href="#description-42">Description</a></h3>
+<h3 id="description-43"><a class="header" href="#description-43">Description</a></h3>
 <p>Returns details about the server installation and index.</p>
-<h3 id="示例-44"><a class="header" href="#示例-44">示例</a></h3>
+<h3 id="示例-45"><a class="header" href="#示例-45">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/status
 </code></pre>
@@ -9358,9 +9411,9 @@ i               # separator
     <code>GET</code>
     <code><b>/tx/&lt;TRANSACTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-43"><a class="header" href="#description-43">Description</a></h3>
+<h3 id="description-44"><a class="header" href="#description-44">Description</a></h3>
 <p>Returns details about the specified transaction.</p>
-<h3 id="示例-45"><a class="header" href="#示例-45">示例</a></h3>
+<h3 id="示例-46"><a class="header" href="#示例-46">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/tx/99811de396ff10152cdfc9588d9750d0151501f081df2e56071c42dc3532b743
 </code></pre>
@@ -9401,9 +9454,9 @@ i               # separator
     <code>GET</code>
     <code><b>/content/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-44"><a class="header" href="#description-44">Description</a></h3>
+<h3 id="description-45"><a class="header" href="#description-45">Description</a></h3>
 <p>The content of the inscription with <code>&lt;INSCRIPTION_ID&gt;</code>.</p>
-<h3 id="示例-46"><a class="header" href="#示例-46">示例</a></h3>
+<h3 id="示例-47"><a class="header" href="#示例-47">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/content/6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0 &gt; skull.jpg
 </code></pre>
@@ -9414,9 +9467,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/blockhash</b></code>
   </summary>
-<h3 id="description-45"><a class="header" href="#description-45">Description</a></h3>
+<h3 id="description-46"><a class="header" href="#description-46">Description</a></h3>
 <p>Latest block hash.</p>
-<h3 id="示例-47"><a class="header" href="#示例-47">示例</a></h3>
+<h3 id="示例-48"><a class="header" href="#示例-48">示例</a></h3>
 <pre><code class="language-bash">curl -s  \
   http://0.0.0.0:80/r/blockhash
 </code></pre>
@@ -9428,9 +9481,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/blockhash/&lt;HEIGHT&gt;</b></code>
   </summary>
-<h3 id="description-46"><a class="header" href="#description-46">Description</a></h3>
+<h3 id="description-47"><a class="header" href="#description-47">Description</a></h3>
 <p>Block hash at given block height as JSON string.</p>
-<h3 id="示例-48"><a class="header" href="#示例-48">示例</a></h3>
+<h3 id="示例-49"><a class="header" href="#示例-49">示例</a></h3>
 <pre><code class="language-bash">curl -s  \
   http://0.0.0.0:80/r/blockhash/840000
 </code></pre>
@@ -9442,9 +9495,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/blockheight</b></code>
   </summary>
-<h3 id="description-47"><a class="header" href="#description-47">Description</a></h3>
+<h3 id="description-48"><a class="header" href="#description-48">Description</a></h3>
 <p>Latest block height.</p>
-<h3 id="示例-49"><a class="header" href="#示例-49">示例</a></h3>
+<h3 id="示例-50"><a class="header" href="#示例-50">示例</a></h3>
 <pre><code class="language-bash">curl -s  \
   http://0.0.0.0:80/r/blockheight
 </code></pre>
@@ -9456,7 +9509,7 @@ i               # separator
     <code>GET</code>
     <code><b>/r/blockinfo/&lt;QUERY&gt;</b></code>
   </summary>
-<h3 id="description-48"><a class="header" href="#description-48">Description</a></h3>
+<h3 id="description-49"><a class="header" href="#description-49">Description</a></h3>
 <p>Block info. <code>&lt;QUERY&gt;</code> may be a block height or block hash.</p>
 <h3 id="example-blockheight-1"><a class="header" href="#example-blockheight-1">Example (blockheight)</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
@@ -9549,9 +9602,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/blocktime</b></code>
   </summary>
-<h3 id="description-49"><a class="header" href="#description-49">Description</a></h3>
+<h3 id="description-50"><a class="header" href="#description-50">Description</a></h3>
 <p>UNIX time stamp of latest block.</p>
-<h3 id="示例-50"><a class="header" href="#示例-50">示例</a></h3>
+<h3 id="示例-51"><a class="header" href="#示例-51">示例</a></h3>
 <pre><code class="language-bash">curl -s  \
   http://0.0.0.0:80/r/blocktime
 </code></pre>
@@ -9563,9 +9616,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/children/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-50"><a class="header" href="#description-50">Description</a></h3>
+<h3 id="description-51"><a class="header" href="#description-51">Description</a></h3>
 <p>The first 100 child inscription ids.</p>
-<h3 id="示例-51"><a class="header" href="#示例-51">示例</a></h3>
+<h3 id="示例-52"><a class="header" href="#示例-52">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/children/e317a2a5d68bd1004ae15a06175a319272a10389ff125c98820389edef8b0a94i0
 </code></pre>
@@ -9682,9 +9735,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/children/&lt;INSCRIPTION_ID&gt;/&lt;PAGE&gt;</b></code>
   </summary>
-<h3 id="description-51"><a class="header" href="#description-51">Description</a></h3>
+<h3 id="description-52"><a class="header" href="#description-52">Description</a></h3>
 <p>The set of 100 child inscription ids on <code>&lt;PAGE&gt;</code>.</p>
-<h3 id="示例-52"><a class="header" href="#示例-52">示例</a></h3>
+<h3 id="示例-53"><a class="header" href="#示例-53">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/children/e317a2a5d68bd1004ae15a06175a319272a10389ff125c98820389edef8b0a94i0/9
 </code></pre>
@@ -9801,9 +9854,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/children/&lt;INSCRIPTION_ID&gt;/inscriptions</b></code>
   </summary>
-<h3 id="description-52"><a class="header" href="#description-52">Description</a></h3>
+<h3 id="description-53"><a class="header" href="#description-53">Description</a></h3>
 <p>Details of the first 100 child inscriptions.</p>
-<h3 id="示例-53"><a class="header" href="#示例-53">示例</a></h3>
+<h3 id="示例-54"><a class="header" href="#示例-54">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/children/e317a2a5d68bd1004ae15a06175a319272a10389ff125c98820389edef8b0a94i0/inscriptions
 </code></pre>
@@ -11118,9 +11171,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/children/&lt;INSCRIPTION_ID&gt;/inscriptions/&lt;PAGE&gt;</b></code>
   </summary>
-<h3 id="description-53"><a class="header" href="#description-53">Description</a></h3>
+<h3 id="description-54"><a class="header" href="#description-54">Description</a></h3>
 <p>Details of the set of 100 child inscriptions on &lt;PAGE&gt;.</p>
-<h3 id="示例-54"><a class="header" href="#示例-54">示例</a></h3>
+<h3 id="示例-55"><a class="header" href="#示例-55">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/children/e317a2a5d68bd1004ae15a06175a319272a10389ff125c98820389edef8b0a94i0/inscriptions/9
 </code></pre>
@@ -12437,7 +12490,7 @@ i               # separator
     <code>GET</code>
     <code><b>/r/undelegated-content/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-54"><a class="header" href="#description-54">Description</a></h3>
+<h3 id="description-55"><a class="header" href="#description-55">Description</a></h3>
 <p>Undelegated content of an inscription.</p>
 </details>
 <details>
@@ -12445,9 +12498,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/inscription/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-55"><a class="header" href="#description-55">Description</a></h3>
+<h3 id="description-56"><a class="header" href="#description-56">Description</a></h3>
 <p>Information about an inscription.</p>
-<h3 id="示例-55"><a class="header" href="#示例-55">示例</a></h3>
+<h3 id="示例-56"><a class="header" href="#示例-56">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/inscriptions/13130e4b299ed361f2a734f6433844ef0f0211cd504e0ca8f4d4ab20f51b8127i0
 </code></pre>
@@ -12476,9 +12529,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/metadata/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-56"><a class="header" href="#description-56">Description</a></h3>
+<h3 id="description-57"><a class="header" href="#description-57">Description</a></h3>
 <p>JSON string containing the hex-encoded CBOR metadata.</p>
-<h3 id="示例-56"><a class="header" href="#示例-56">示例</a></h3>
+<h3 id="示例-57"><a class="header" href="#示例-57">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/metadata/b1ef66c2d1a047cbaa6260b74daac43813924378fe08ef8545da4cb79e8fcf00i0
 </code></pre>
@@ -12490,9 +12543,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/parents/&lt;INSCRIPTION_ID&gt;</b></code>
   </summary>
-<h3 id="description-57"><a class="header" href="#description-57">Description</a></h3>
+<h3 id="description-58"><a class="header" href="#description-58">Description</a></h3>
 <p>The first 100 parent inscription ids.</p>
-<h3 id="示例-57"><a class="header" href="#示例-57">示例</a></h3>
+<h3 id="示例-58"><a class="header" href="#示例-58">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/parents/b1ef66c2d1a047cbaa6260b74daac43813924378fe08ef8545da4cb79e8fcf00i0
 </code></pre>
@@ -12510,9 +12563,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/parents/&lt;INSCRIPTION_ID&gt;/&lt;PAGE&gt;</b></code>
   </summary>
-<h3 id="description-58"><a class="header" href="#description-58">Description</a></h3>
+<h3 id="description-59"><a class="header" href="#description-59">Description</a></h3>
 <p>The set of 100 parent inscription ids on <code>&lt;PAGE&gt;</code>.</p>
-<h3 id="示例-58"><a class="header" href="#示例-58">示例</a></h3>
+<h3 id="示例-59"><a class="header" href="#示例-59">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/parents/b1ef66c2d1a047cbaa6260b74daac43813924378fe08ef8545da4cb79e8fcf00i0/9
 </code></pre>
@@ -12528,9 +12581,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/sat/&lt;SAT_NUMBER&gt;</b></code>
   </summary>
-<h3 id="description-59"><a class="header" href="#description-59">Description</a></h3>
+<h3 id="description-60"><a class="header" href="#description-60">Description</a></h3>
 <p>The first 100 inscription ids on a sat. Requires index with <code>--index-sats</code> flag.</p>
-<h3 id="示例-59"><a class="header" href="#示例-59">示例</a></h3>
+<h3 id="示例-60"><a class="header" href="#示例-60">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/sat/153899938226999
 </code></pre>
@@ -12551,9 +12604,9 @@ i               # separator
     <code>GET</code>
     <code><b>/r/sat/&lt;SAT_NUMBER&gt;/&lt;PAGE&gt;</b></code>
   </summary>
-<h3 id="description-60"><a class="header" href="#description-60">Description</a></h3>
+<h3 id="description-61"><a class="header" href="#description-61">Description</a></h3>
 <p>The set of 100 inscription ids on <code>&lt;PAGE&gt;</code>. Requires index with <code>--index-sats</code> flag.</p>
-<h3 id="示例-60"><a class="header" href="#示例-60">示例</a></h3>
+<h3 id="示例-61"><a class="header" href="#示例-61">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/sat/1499676120331756/1
 </code></pre>
@@ -12581,14 +12634,58 @@ i               # separator
     <code>GET</code>
     <code><b>/r/sat/&lt;SAT_NUMBER&gt;/at/&lt;INDEX&gt;</b></code>
   </summary>
-<h3 id="description-61"><a class="header" href="#description-61">Description</a></h3>
+<h3 id="description-62"><a class="header" href="#description-62">Description</a></h3>
 <p>The inscription id at <code>&lt;INDEX&gt;</code> of all inscriptions on a sat. <code>&lt;INDEX&gt;</code> may be a negative number to index from the back. <code>0</code> being the first and <code>-1</code> being the most recent for example. Requires index with <code>--index-sats</code> flag.</p>
-<h3 id="示例-61"><a class="header" href="#示例-61">示例</a></h3>
+<h3 id="示例-62"><a class="header" href="#示例-62">示例</a></h3>
 <pre><code class="language-bash">curl -s -H "Accept: application/json" \
   http://0.0.0.0:80/r/sat/153899938226999/at/-1
 </code></pre>
 <pre><code class="language-json">{
   "id": "488c32e4dfcdc0fa376c2c2af2d572a12f4d33d3245689d1a9f74167f1e14678i0"
+}
+</code></pre>
+</details>
+<details>
+  <summary>
+    <code>GET</code>
+    <code><b>/r/utxo/&lt;OUTPOINT&gt;</b></code>
+  </summary>
+<h3 id="description-63"><a class="header" href="#description-63">Description</a></h3>
+<p>Get assets held by an unspent transaction output.</p>
+<h3 id="示例-63"><a class="header" href="#示例-63">示例</a></h3>
+<p>Unspent transaction output with server without any indices:</p>
+<pre><code class="language-bash">curl -s -H "Accept: application/json" \
+  http://0.0.0.0:80/r/utxo/4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b:0
+</code></pre>
+<pre><code class="language-json">{
+  "inscriptions": null,
+  "runes": null,
+  "sat_ranges": null,
+  "value": 5000000000
+}
+</code></pre>
+<p>With rune, inscription, and sat index:</p>
+<pre><code class="language-bash">curl -s -H "Accept: application/json" \
+  http://0.0.0.0:80/r/utxo/626860df36c1047194866c6812f04c15ab84f3690e7cc06fd600c841f1943e05:0
+</code></pre>
+<pre><code class="language-json">{
+  "inscriptions": [
+    "6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0"
+  ],
+  "runes": {
+    "UNCOMMON•GOODS": {
+      "amount": 6845,
+      "divisibility": 0,
+      "symbol": "⧉"
+    }
+  },
+  "sat_ranges": [
+    [
+      1905800627509113,
+      1905800627509443
+    ]
+  ],
+  "value": 330
 }
 </code></pre>
 </details>
@@ -13322,7 +13419,7 @@ server_username: foo
 <p>Teleburn 地址源自铭文的ID，他们没有私钥，因此发往燃烧传送地址的资产将被烧毁 当前只支持以太坊的燃烧地址，欢迎提交关于其他链上的燃烧传送地址的拉取请求</p>
 <h2 id="以太坊"><a class="header" href="#以太坊">以太坊</a></h2>
 <p>以太坊的燃烧传送teleburn地址是根据取铭文ID的SHA-256哈希的前20字节来生成的 这个哈希被序列化为36字节，其中前32字节包含交易ID， 最后四个字节包含大端序的铭文索引，并将其解释为一个Ethereum地址。</p>
-<h2 id="示例-62"><a class="header" href="#示例-62">示例</a></h2>
+<h2 id="示例-64"><a class="header" href="#示例-64">示例</a></h2>
 <p>ENS 域名 <a href="https://app.ens.domains/rodarmor.eth">rodarmor.eth</a>, 被燃烧传输teleburned 到 <a href="https://ordinals.com/inscription/6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0">inscription zero</a>.</p>
 <p>零号铭文的铭文ID是<code>6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0</code>.</p>
 <p>使用teleburn命令 <code>6fb976ab49dcec017f1e201e84395983204ae1a7c2abf7ced0a85d692e442799i0</code></p>
@@ -13363,7 +13460,7 @@ $ord outputs
 </tbody></table>
 </div>
 <p>Regtest不需要下载区块链或者建立ord索引</p>
-<h2 id="示例-63"><a class="header" href="#示例-63">示例</a></h2>
+<h2 id="示例-65"><a class="header" href="#示例-65">示例</a></h2>
 <p>在regtest里运行bitcoind，使用：</p>
 <pre><code>bitcoind -regtest -txindex
 </code></pre>
